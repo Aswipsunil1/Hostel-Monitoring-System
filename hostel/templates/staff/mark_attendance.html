@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mark Attendance</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-100 min-h-screen p-8">
+    
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md">
+
+    <div class="flex justify-between mb-6">
+      <h1 class="text-2xl font-bold text-blue-700">Mark Attendance</h1>
+      <a href="{% url 'view_attendance' %}" 
+         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">
+        📋 View All Attendance
+      </a>
+    </div>
+    
+    {% if messages %}
+      {% for message in messages %}
+        <div class="p-2 mb-4 rounded bg-green-200 text-green-800">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+    
+    <form method="POST">
+      {% csrf_token %}
+      
+      <label class="block font-medium mb-2">Date:</label>
+      <input type="date" name="date" required class="mb-4 px-3 py-2 border rounded w-full"/>
+
+      <table class="w-full text-left border">
+        <thead class="bg-blue-200">
+          <tr>
+            <th class="py-2 px-4 border">Student</th>
+            <th class="py-2 px-4 border">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+            <tr class="border-t">
+              <td class="py-2 px-4 border">
+                {% with userinfos=student.userinfo_set.all %}
+                  {% if userinfos %}
+                    {{ userinfos.0.fullname }}
+                  {% else %}
+                    {{ student.username }}
+                  {% endif %}
+                {% endwith %}
+              </td>
+              <td class="py-2 px-4 border">
+                <select name="status_{{ student.id }}" class="border px-2 py-1 rounded">
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+                </select>
+              </td>
+            </tr>
+            
+          {% endfor %}
+        </tbody>
+      </table>
+      
+      <button type="submit" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-semibold">
+        Submit Attendance
+      </button>
+    </form>
+        <div class="flex justify-between mb-6">
+      <h1 class="text-2xl font-bold text-blue-700"></h1>
+      <a href="{% url 'staff_dashboard' %}" 
+         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium">
+        Back to Dashboard
+      </a>
+    </div>
+  </div>
+</body>
+</html>

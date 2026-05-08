@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Add Weekly Meals</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-50 p-6">
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded shadow">
+
+    <div class="flex justify-between mb-6">
+      <h2 class="text-2xl font-bold text-blue-700">Add Meals for the Week</h2>
+      <a href="{% url 'staff_dashboard' %}" class="text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+      {% for day in days %}
+        <div class="mb-6">
+          <h3 class="text-lg font-semibold text-gray-700">{{ day.0 }}</h3>
+          <label class="block text-sm mt-2">Breakfast</label>
+          <input type="text" name="breakfast_{{ day.0 }}" required class="w-full border px-3 py-2 rounded">
+
+          <label class="block text-sm mt-2">Lunch</label>
+          <input type="text" name="lunch_{{ day.0 }}" required class="w-full border px-3 py-2 rounded">
+
+          <label class="block text-sm mt-2">Dinner</label>
+          <input type="text" name="dinner_{{ day.0 }}" required class="w-full border px-3 py-2 rounded">
+        </div>
+        <hr class="mb-4">
+      {% endfor %}
+
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded">
+        Save Meals
+      </button>
+    </form>
+  </div>
+</body>
+</html>

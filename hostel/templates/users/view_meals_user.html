@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Weekly Mess Menu</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-100 p-6">
+  <div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-md">
+
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold text-blue-700">🍽️ Weekly Mess Menu</h1>
+      <a href="{% url 'dashboard' %}" 
+         class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+        ← Back to Dashboard
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for meal in meals %}
+        <div class="bg-white rounded-xl shadow p-4">
+          <h2 class="text-xl font-semibold text-blue-600 mb-2">{{ meal.day }}</h2>
+          <p><strong>🍳 Breakfast:</strong> {{ meal.breakfast }}</p>
+          <p><strong>🍛 Lunch:</strong> {{ meal.lunch }}</p>
+          <p><strong>🍽️ Dinner:</strong> {{ meal.dinner }}</p>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</body>
+</html>

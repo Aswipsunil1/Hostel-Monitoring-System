@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Complaints - Hostel Staff</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-100 min-h-screen p-8">
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-blue-700">Student Complaints</h1>
+    <a href="{% url 'staff_dashboard' %}" 
+       class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+      ← Back to Dashboard
+    </a>
+  </div>
+<!-- Messages -->
+{% if messages %}
+  <div class="max-w-6xl mx-auto mb-4">
+    {% for message in messages %}
+      <div 
+        class="p-3 rounded mb-2 text-white
+          {% if message.tags == 'success' %}bg-green-500{% elif message.tags == 'error' %}bg-red-500{% else %}bg-blue-500{% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+  <!-- Complaints Table -->
+  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6">
+    {% if complaints %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-left border border-gray-200">
+          <thead class="bg-blue-200 text-blue-900">
+            <tr>
+              <th class="py-2 px-4 border">User</th>
+              <th class="py-2 px-4 border">Subject</th>
+              <th class="py-2 px-4 border">Description</th>
+              <th class="py-2 px-4 border">Status</th>
+              <th class="py-2 px-4 border">Date</th>
+              <th class="py-2 px-4 border">Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for complaint in complaints %}
+              <tr class="border-t">
+                <td class="py-2 px-4 border">{{ complaint.user.username }}</td> <!-- ✅ Username instead of email -->
+                <td class="py-2 px-4 border">{{ complaint.subject }}</td>
+                <td class="py-2 px-4 border">{{ complaint.description }}</td>
+                <td class="py-2 px-4 border">{{ complaint.status }}</td>
+                <td class="py-2 px-4 border">{{ complaint.date_submitted|date:"Y-m-d H:i" }}</td>
+                <td class="py-2 px-4 border">
+                  <form action="{% url 'update_complaint_status' complaint.id %}" method="POST" class="flex space-x-2 items-center">
+                    {% csrf_token %}
+                    <select name="status" class="border rounded px-2 py-1 text-sm">
+                      <option value="Pending" {% if complaint.status == "Pending" %}selected{% endif %}>Pending</option>
+                      <option value="In Progress" {% if complaint.status == "In Progress" %}selected{% endif %}>In Progress</option>
+                      <option value="Resolved" {% if complaint.status == "Resolved" %}selected{% endif %}>Resolved</option>
+                    </select>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">Update</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-center text-gray-700">No complaints found.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Leave Requests - Hostel Staff</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-100 min-h-screen p-8">
+{% if messages %}
+  <div class="max-w-6xl mx-auto mb-4">
+    {% for message in messages %}
+      <div class="p-3 rounded mb-2
+          {% if message.tags == 'error' %}bg-red-200 text-red-800
+          {% elif message.tags == 'success' %}bg-green-200 text-green-800
+          {% else %}bg-gray-200 text-gray-800
+          {% endif %}">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-blue-700">Student Leave Requests</h1>
+    <a href="{% url 'staff_dashboard' %}" 
+       class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+      ← Back to Dashboard
+    </a>
+  </div>
+
+  <!-- Leave Requests Table -->
+  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md p-6">
+    {% if leave_requests %}
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-left border border-gray-200">
+          <thead class="bg-blue-200 text-blue-900">
+            <tr>
+              <th class="py-2 px-4 border">User</th>
+              <th class="py-2 px-4 border">Start Date</th>
+              <th class="py-2 px-4 border">End Date</th>
+              <th class="py-2 px-4 border">Reason</th>
+              <th class="py-2 px-4 border">Status</th>
+              <th class="py-2 px-4 border">Applied On</th>
+              <th class="py-2 px-4 border">Update</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for leave in leave_requests %}
+              <tr class="border-t">
+                <td class="py-2 px-4 border">
+                  {% with userinfos=leave.user.userinfo_set.all %}
+                    {% if userinfos %}
+                      {{ userinfos.0.fullname }}
+                    {% else %}
+                      {{ leave.user.username }}
+                    {% endif %}
+                  {% endwith %}
+                </td>
+                <td class="py-2 px-4 border">{{ leave.start_date }}</td>
+                <td class="py-2 px-4 border">{{ leave.end_date }}</td>
+                <td class="py-2 px-4 border">{{ leave.reason }}</td>
+                <td class="py-2 px-4 border">{{ leave.status }}</td>
+                <td class="py-2 px-4 border">{{ leave.date_applied|date:"Y-m-d H:i" }}</td>
+                <td class="py-2 px-4 border">
+                  <form action="{% url 'update_leave_request_status_staff' leave.id %}" method="POST" class="flex space-x-2 items-center">
+                    {% csrf_token %}
+                    <select name="status" class="border rounded px-2 py-1 text-sm">
+                      <option value="Pending" {% if leave.status == "Pending" %}selected{% endif %}>Pending</option>
+                      <option value="Approved" {% if leave.status == "Approved" %}selected{% endif %}>Approved</option>
+                      <option value="Rejected" {% if leave.status == "Rejected" %}selected{% endif %}>Rejected</option>
+                    </select>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white text-sm px-3 py-1 rounded">Update</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="text-center text-gray-700">No leave requests found.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>

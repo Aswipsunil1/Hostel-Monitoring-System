@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Complaint Register - Hostel Monitor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(135deg, #f0f4f7, #d9e4ec);
+      font-family: 'Poppins', sans-serif;
+    }
+    .container {
+      max-width: 800px;
+      background: #fff;
+      margin-top: 60px;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      font-weight: 700;
+      color: #333;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    label {
+      font-weight: 600;
+    }
+    .btn-primary {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+    .btn-secondary {
+      border-radius: 10px;
+      width: 100%;
+      margin-top: 15px;
+    }
+    .table-container {
+      margin-top: 40px;
+    }
+    table {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .status-pending {
+      background-color: #ffeeba;
+      color: #856404;
+    }
+    .status-resolved {
+      background-color: #d4edda;
+      color: #155724;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>📢 Complaint Register</h2>
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="subject" class="form-label">Subject</label>
+      <input type="text" name="subject" id="subject" class="form-control" placeholder="Enter complaint subject" required>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="description" id="description" class="form-control" rows="4" placeholder="Describe your issue..." required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit Complaint</button>
+  </form>
+
+  <!-- Back to Dashboard Button -->
+  <a href="{% url 'dashboard' %}" class="btn btn-secondary">⬅️ Back to Dashboard</a>
+
+  <div class="table-container">
+    <h4 class="mt-4 mb-3 text-center">Your Previous Complaints</h4>
+    {% if complaints %}
+      <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Subject</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Date Submitted</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in complaints %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ c.subject }}</td>
+            <td>{{ c.description }}</td>
+            <td>
+              <span class="status-badge {% if c.status == 'Pending' %}status-pending{% else %}status-resolved{% endif %}">
+                {{ c.status }}
+              </span>
+            </td>
+            <td>{{ c.date_submitted|date:"M d, Y H:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-center text-muted">No complaints submitted yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+</body>
+</html>

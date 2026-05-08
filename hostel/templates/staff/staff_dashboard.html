@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Staff Dashboard</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    nav.navbar {
+      background: #0d6efd;
+    }
+
+    .dashboard-card {
+      border: none;
+      border-radius: 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      color: #0d6efd;
+    }
+
+    footer {
+      background: #fff;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    .illustration {
+      width: 100%;
+      max-width: 360px;
+    }
+
+    .message-box {
+      border-radius: 0.75rem;
+    }
+
+    .nav-brand-text {
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark py-3 shadow-sm">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="bi bi-building-check fs-3 me-2"></i>
+        <span class="nav-brand-text">Hostel Staff Dashboard</span>
+      </a>
+      <div class="ms-auto">
+        <a href="{% url 'staff_logout' %}" class="btn btn-danger btn-sm px-4">
+          <i class="bi bi-box-arrow-right me-1"></i> Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Flash Messages -->
+  {% if messages %}
+  <div class="container mt-4">
+    {% for message in messages %}
+      <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% else %}alert-info{% endif %} message-box shadow-sm">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- Dashboard Content -->
+  <div class="container py-5">
+    <div class="row align-items-center mb-5">
+      <div class="col-lg-6" data-aos="fade-right">
+        <h2 class="fw-bold text-primary mb-3">Welcome, Staff Member 👋</h2>
+        <p class="text-muted">
+          Manage student attendance, complaints, room allocations, and more — all in one smart dashboard.
+        </p>
+      </div>
+      <div class="col-lg-6 text-center" data-aos="fade-left">
+        <img src="https://undraw.co/api/illustrations/random?color=0d6efd" alt="Dashboard Illustration" class="illustration">
+      </div>
+    </div>
+
+    <div class="row g-4 mt-4">
+
+      <!-- Mark Attendance -->
+      <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="100">
+        <a href="{% url 'mark_attendance' %}" class="text-decoration-none text-dark">
+          <div class="card dashboard-card text-center p-4">
+            <i class="bi bi-clipboard-check card-icon mb-3"></i>
+            <h5 class="fw-semibold mb-2">Mark Attendance</h5>
+            <p class="text-muted small">Record and track daily student attendance efficiently.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- View Complaints -->
+      <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="200">
+        <a href="{% url 'view_complaints_staff' %}" class="text-decoration-none text-dark">
+          <div class="card dashboard-card text-center p-4">
+            <i class="bi bi-chat-dots card-icon mb-3"></i>
+            <h5 class="fw-semibold mb-2">View Complaints</h5>
+            <p class="text-muted small">Review and resolve student complaints easily.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- View Leave Requests -->
+      <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="300">
+        <a href="{% url 'view_leave_requests_staff' %}" class="text-decoration-none text-dark">
+          <div class="card dashboard-card text-center p-4">
+            <i class="bi bi-calendar-check card-icon mb-3"></i>
+            <h5 class="fw-semibold mb-2">View Leave Requests</h5>
+            <p class="text-muted small">Approve or reject student leave applications.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Allocate Rooms -->
+      <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="400">
+        <a href="{% url 'allocate_rooms' %}" class="text-decoration-none text-dark">
+          <div class="card dashboard-card text-center p-4">
+            <i class="bi bi-door-open card-icon mb-3"></i>
+            <h5 class="fw-semibold mb-2">Allocate Rooms</h5>
+            <p class="text-muted small">Assign hostel rooms to students efficiently.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Mess Management -->
+      <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="500">
+        <a href="{% url 'view_or_add_meals' %}" class="text-decoration-none text-dark">
+          <div class="card dashboard-card text-center p-4">
+            <i class="bi bi-basket card-icon mb-3"></i>
+            <h5 class="fw-semibold mb-2">Mess Management</h5>
+            <p class="text-muted small">Add or update daily mess meal details.</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Student Overview -->
+      <div class="col-md-6 col-lg-4" data-aos="zoom-in" data-aos-delay="600">
+        <a href="#" class="text-decoration-none text-dark">
+          <div class="card dashboard-card text-center p-4">
+            <i class="bi bi-people card-icon mb-3"></i>
+            <h5 class="fw-semibold mb-2">Student Overview</h5>
+            <p class="text-muted small">View summary of all hostel students and their status.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-4 mt-auto text-muted small">
+    © 2025 Hostel Monitoring System | Designed with ❤️ for Hostel Staff
+  </footer>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      once: true
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Allocate Rooms - Hostel Staff</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-100 min-h-screen p-8">
+
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-blue-700">Allocate Rooms to Students</h1>
+    <a href="{% url 'staff_dashboard' %}" 
+       class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition">
+      ← Back to Dashboard
+    </a>
+  </div>
+
+  <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md p-6">
+    
+    {% if messages %}
+      <div class="mb-4">
+        {% for message in messages %}
+          <div class="p-2 rounded {{ message.tags }} bg-{{ message.tags }}-200 text-{{ message.tags }}-800">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+      
+      <div>
+        <label for="student" class="block font-medium mb-1">Select Student:</label>
+        <select id="student" name="student" required class="w-full border rounded px-3 py-2">
+          <option value="" disabled selected>Choose a student</option>
+          {% for student in students %}
+            {% with userinfos=student.userinfo_set.all %}
+              {% if userinfos %}
+                <option value="{{ student.id }}">{{ userinfos.0.fullname }} ({{ student.username }})</option>
+              {% else %}
+                <option value="{{ student.id }}">{{ student.username }}</option>
+              {% endif %}
+            {% endwith %}
+          {% endfor %}
+        </select>
+      </div>
+
+      <div>
+        <label for="room" class="block font-medium mb-1">Select Room:</label>
+        <select id="room" name="room" required class="w-full border rounded px-3 py-2">
+          <option value="" disabled selected>Choose a room</option>
+          {% for room in rooms %}
+            <option value="{{ room.id }}">{{ room.room_number }} (Capacity: {{ room.capacity }})</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-semibold">
+        Allocate Room
+      </button>
+    </form>
+
+    <hr class="my-8" />
+
+    <h2 class="text-2xl font-semibold mb-4">Current Room Allocations</h2>
+    {% if allocations %}
+      <table class="min-w-full text-left border border-gray-200">
+        <thead class="bg-blue-200 text-blue-900">
+          <tr>
+            <th class="py-2 px-4 border">Student</th>
+            <th class="py-2 px-4 border">Room Number</th>
+            <th class="py-2 px-4 border">Date Allocated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for allocation in allocations %}
+            <tr class="border-t">
+              <td class="py-2 px-4 border">
+                {% with userinfos=allocation.student.userinfo_set.all %}
+                  {% if userinfos %}
+                    {{ userinfos.0.fullname }} ({{ allocation.student.username }})
+                  {% else %}
+                    {{ allocation.student.username }}
+                  {% endif %}
+                {% endwith %}
+              </td>
+              <td class="py-2 px-4 border">{{ allocation.room.room_number }}</td>
+              <td class="py-2 px-4 border">{{ allocation.date_allocated|date:"Y-m-d H:i" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-center text-gray-700">No room allocations yet.</p>
+    {% endif %}
+  </div>
+
+</body>
+</html>
